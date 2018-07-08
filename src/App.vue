@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <router-view/>
   </div>
 </template>
@@ -8,6 +7,9 @@
 <script>
 export default {
   name: 'App'
+  // created(){
+  // 检测element ui安装是否完毕
+  // }
 };
 </script>
 

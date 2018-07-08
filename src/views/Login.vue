@@ -5,7 +5,7 @@
         label-width="80px"
         class="login-from"
         >
-            <h2>用户登录</h2>
+            <h4 style="{text-align:center}">用户登录</h4>
             <el-form-item label="用户名" prop="pass">
                 <el-input type="text" v-model="formData.username" auto-complete="off"></el-input>
             </el-form-item>

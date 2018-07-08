@@ -7,13 +7,13 @@
         >
             <h2>用户登录</h2>
             <el-form-item label="用户名" prop="pass">
-                <el-input type="password" v-model="formData.pass" auto-complete="off"></el-input>
+                <el-input type="text" v-model="formData.username" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="checkPass">
-                <el-input type="password" v-model="formData.checkPass" auto-complete="off"></el-input>
+                <el-input type="password" v-model="formData.password" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" class="login-btn">登录</el-button>
+                <el-button type="primary" @click="handleLogin" class="login-btn">登录</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -24,11 +24,28 @@ export default {
   data () {
     return {
       formData: {
-        pass: '',
-        checkPass: ''
+        username: '',
+        password: ''
       },
       props: ['pass', 'checkPass']
     };
+  },
+  methods: {
+    async handleLogin () {
+      const res = await this.$http.post('login', this.formData);
+      // 服务器返回数据为{data:{}, meta:{status:200,msg:''}}
+      const { meta: { status, msg } } = res.data;
+      if (status === 200) {
+        // 登陆成功 记录token sessionStorage
+        // 跳转到后台首页
+        // 弹出成功提示
+        const token = res.data.data.token;
+        sessionStorage.setItem('token', token);
+        this.$message.success(msg);
+      } else {
+        this.$message.error(msg);
+      }
+    }
   }
 };
 </script>

@@ -6,10 +6,10 @@
         class="login-from"
         >
             <h2>用户登录</h2>
-            <el-form-item label="密码" prop="pass">
+            <el-form-item label="用户名" prop="pass">
                 <el-input type="password" v-model="formData.pass" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="checkPass">
+            <el-form-item label="密码" prop="checkPass">
                 <el-input type="password" v-model="formData.checkPass" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item>

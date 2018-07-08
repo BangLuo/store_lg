@@ -6,11 +6,13 @@ import router from './router';
 // 引入node-moudles中的element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import './assets/css/style.css';
+import '@/assets/css/style.css';
+import MyAxios from '@/plugins/MyAxios.js';
 Vue.config.productionTip = false;
 
 // 注册组件
 Vue.use(ElementUI);
+Vue.use(MyAxios);
 
 /* eslint-disable no-new */
 new Vue({

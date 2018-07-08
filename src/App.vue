@@ -7,9 +7,6 @@
 <script>
 export default {
   name: 'App'
-  // created(){
-  // 检测element ui安装是否完毕
-  // }
 };
 </script>
 

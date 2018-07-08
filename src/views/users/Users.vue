@@ -7,10 +7,10 @@
           <el-breadcrumb-item>用户管理</el-breadcrumb-item>
           <el-breadcrumb-item>用户列表</el-breadcrumb-item>
         </el-breadcrumb>
-           <!-- 搜索框 TODO向左对齐 -->
-        <el-row class="el-search" style="margin-top: 15px;" clearable>
-          <el-col :span="24">
-            <el-input placeholder="请输入内容"  class="input-with-select">
+           <!-- 搜索框 #app公共样式影响 -->
+        <el-row class="search">
+          <el-col :span="24" >
+            <el-input placeholder="请输入内容" clearable  class="input-with-select" >
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
             <el-button type="success" plain>添加用户</el-button>
@@ -42,20 +42,18 @@
               label="电话"
               width="150">
             </el-table-column>
-           
             <el-table-column
               label="创建时间"
-              width="150"> 
+              width="150">
               <template slot-scope="scope">
-              {{ scope.row.create_time  }}
+              {{ scope.row.create_time | fmData('YYYY-MM-DD') }}
               </template>
             </el-table-column>
-           
+
              <el-table-column
               prop="mobile"
               label="用户状态"
               width="100">
-              <!-- scope.row 就是当前绑定的数据对象 -->
               <template slot-scope="scope">
                 <el-switch
                 v-model="scope.row.mg_state"
@@ -78,12 +76,11 @@
             </el-table-column>
           </el-table>
       </el-card>
-   
     </div>
 </template>
 
 <script>
- export default {
+export default {
   data () {
     return {
       // 用户列表数据
@@ -92,14 +89,18 @@
     };
   },
   created () {
-    // 发送请求获取数据
-    this.loadData ();
+    // 发送请求获取数据前 验证token
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      this.$router.push({name: 'login'});
+    }
+    this.loadData();
     this.loading = false;
   },
   methods: {
-    
+
     async loadData () {
-       // 发送前获取token
+      // 发送前获取token
       const token = sessionStorage.getItem('token');
       this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get('users?pagenum=1&pagesize=5');
@@ -108,16 +109,20 @@
       if (status === 200) {
         const { data: { users } } = data;
         this.list = users;
-      }else{
+      } else {
         this.$message.error(msg);
       }
     }
   }
-}
+};
 </script>
 
 <style>
-.el-search .el-input {
+.search {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.search .el-input {
   width: 300px;
 }
 </style>

@@ -8,12 +8,13 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/css/style.css';
 import MyAxios from '@/plugins/MyAxios.js';
+import moment from 'moment';
 Vue.config.productionTip = false;
 
 // 全局过滤器 格式化日期
-Vue.filter('fmData',(value, fmString)=>{
-  return moment(value).format(formatStr);
-})
+Vue.filter('fmData', (value, fmString) => {
+  return moment(value).format(fmString);
+});
 
 // 注册组件
 Vue.use(ElementUI);

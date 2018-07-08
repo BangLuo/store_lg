@@ -1,8 +1,8 @@
 html,
-body {
+body{
   height: 100%;
 }
-body {
+body,h2 {
   margin: 0;
   padding: 0;
 }

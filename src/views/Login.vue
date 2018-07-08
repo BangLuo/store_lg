@@ -41,6 +41,7 @@ export default {
         // 弹出成功提示
         const token = res.data.data.token;
         sessionStorage.setItem('token', token);
+        this.$router.push({name: 'home'});
         this.$message.success(msg);
       } else {
         this.$message.error(msg);

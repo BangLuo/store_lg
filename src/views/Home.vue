@@ -3,7 +3,8 @@
    <!-- 头部 -->
     <el-header class="header">
       <el-row>
-        <el-col :span="4">
+        <el-col :span="4" class="logoBox">
+          <img src="@/assets/logo3.png" alt="">
         </el-col>
         <el-col :span="19" class="middle">
           <h2>电商后台管理系统</h2>
@@ -112,6 +113,12 @@ export default {
 
 .header {
   background-color: #b3c0d1;
+}
+
+.header .logoBox img{
+  width: 166px;
+  height: 59px;
+  border-bottom: #b3c0d1 1px solid;
 }
 
 .header .middle{

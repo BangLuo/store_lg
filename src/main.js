@@ -6,7 +6,7 @@ import router from './router';
 // 引入node-moudles中的element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-
+import './assets/css/style.css';
 Vue.config.productionTip = false;
 
 // 注册组件

@@ -80,7 +80,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="pagenum"
-          :page-sizes="[100, 200, 300, 400]"
+          :page-sizes="[2, 4, 6, 8]"
           :page-size="pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
@@ -97,9 +97,9 @@ export default {
       list: [],
       loading: true,
       // 分页相关数据
-      pagenum: 1,
-      pagesize: 100,
-      total: 0
+      pagenum: 1, // 当前显示页
+      pagesize: 2, // 每页多少条显示
+      total: 0 // 总共有多少条从后台获取
     };
   },
   created () {
@@ -117,11 +117,14 @@ export default {
       // 发送前获取token
       const token = sessionStorage.getItem('token');
       this.$http.defaults.headers.common['Authorization'] = token;
-      const res = await this.$http.get('users?pagenum=1&pagesize=5');
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
       const data = res.data;
       const { meta: { msg, status } } = data;
       if (status === 200) {
-        const { data: { users } } = data;
+        // 获取总条数
+        const { data: { users, total } } = data;
+        // 给数据赋值
+        this.total = total;
         this.list = users;
       } else {
         this.$message.error(msg);
@@ -130,9 +133,13 @@ export default {
     // 分页功能
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.pagesize = val;
+      this.loadData();
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.pagenum = val;
+      this.loadData();
     }
   }
 };

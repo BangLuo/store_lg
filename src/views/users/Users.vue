@@ -92,17 +92,29 @@
         title="添加用户"
         :visible.sync="dialogVisible"
         width="60%">
-        <el-form label-position="right" label-width="120px" :model="form">
-          <el-form-item label="用户名">
+        <el-form
+        ref="myform"
+        :rules="formRules"
+        :model="form"
+        label-position="right" label-width="120px">
+          <el-form-item
+          prop="username"
+          label="用户名">
             <el-input v-model="form.username"  auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码">
+          <el-form-item
+          prop="password"
+          label="密码">
             <el-input v-model="form.password" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱">
+          <el-form-item
+          prop="email"
+          label="邮箱">
             <el-input v-model="form.email" ></el-input>
           </el-form-item>
-          <el-form-item label="电话">
+          <el-form-item
+          prop="tel"
+          label="电话">
             <el-input v-model="form.mobile" ></el-input>
           </el-form-item>
         </el-form>
@@ -136,6 +148,24 @@ export default {
         password: '',
         email: '',
         mobile: ''
+      },
+      // 表单验证规则
+      formRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 6, message: '长度在 3 到 6 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, max: 6, message: '长度在 3 到 6 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        tel: [
+          { type: 'number', message: '请输入数值', trigger: ['blur', 'change'] },
+          { min: 11, max: 11, message: '请填入正确的手机号码格式', trigger: 'blur' }
+        ]
       }
     };
   },
@@ -207,14 +237,22 @@ export default {
       }
     },
     // 添加弹出层功能
-    async handleAdd () {
+    async handleAdd () { // 表单的 DOM对象 this.$refs.myform
+      this.$refs.myform.validate(async (valid) => {
+        if (!valid) {
+          return this.$message('请完整输入内容');
+        }
+      });
       const res = await this.$http.post('users', this.form);
       const meta = res.data.meta;
       if (meta.status === 201) {
         this.$message(meta.msg);
         this.dialogVisible = false;
-      } else if (meta.status === 400) {
-        this.$message('该用户已经存在');
+        // 清空文本框的值
+        for (let key in this.formData) {
+          this.formData[key] = '';
+        }
+        this.loadData();
       } else {
         this.$message('添加用户失败');
       }

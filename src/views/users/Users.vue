@@ -49,7 +49,6 @@
               {{ scope.row.create_time | fmData('YYYY-MM-DD') }}
               </template>
             </el-table-column>
-
              <el-table-column
               prop="mobile"
               label="用户状态"
@@ -75,6 +74,17 @@
               </template>
             </el-table-column>
           </el-table>
+        <!-- 分页 -->
+         <el-pagination
+          class="pagenations"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pagenum"
+          :page-sizes="[100, 200, 300, 400]"
+          :page-size="pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </el-card>
     </div>
 </template>
@@ -85,7 +95,11 @@ export default {
     return {
       // 用户列表数据
       list: [],
-      loading: true
+      loading: true,
+      // 分页相关数据
+      pagenum: 1,
+      pagesize: 100,
+      total: 0
     };
   },
   created () {
@@ -112,6 +126,13 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 分页功能
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 };
@@ -124,5 +145,8 @@ export default {
 }
 .search .el-input {
   width: 300px;
+}
+.pagenations{
+  margin-top: 15px;
 }
 </style>

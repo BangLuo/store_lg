@@ -30,11 +30,11 @@
             </el-submenu>
             <el-submenu index="2">
               <template slot="title"><i class="el-icon-location"></i>权限管理</template>
-                 <el-menu-item index="/users">
+                 <el-menu-item index="/">
                 <i class="el-icon-menu"></i>
                   角色列表
                 </el-menu-item>
-                <el-menu-item index="/users">
+                <el-menu-item index="/roles">
                 <i class="el-icon-menu"></i>
                   权限列表
                 </el-menu-item>

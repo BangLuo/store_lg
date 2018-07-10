@@ -126,7 +126,6 @@
       </el-dialog>
       <!-- 修改用户 -->
       <el-dialog
-      @closed="handleClose"
       title="修改用户"
       :visible.sync="dialogVisibleEdite"
       width="60%">
@@ -157,7 +156,7 @@
       </el-dialog>
       <!-- 角色分配 -->
        <el-dialog
-      @closed="handleClose"
+      @closed="handleClosed"
       title="分配角色"
       :visible.sync="dialogVisibleRole"
       width="60%">
@@ -172,7 +171,9 @@
           <el-form-item
           label="角色">
             <!-- 下拉框 -->
-            <el-select  filterable placeholder="请选择" :value="-1">
+            <!-- 下拉框绑定的值的类型，应该跟option的value的值的类型是一致的  -->
+            <el-select v-model="currentUserRoleId" :value="currentUserRoleId">
+              <el-option disabled :value="-1" label="请选择"></el-option>
               <el-option
               v-for="item in roles"
               :key="item.id"
@@ -183,8 +184,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisibleEdite = false">取 消</el-button>
-          <el-button type="primary" @click="handleEdite">修 改</el-button>
+          <el-button @click="dialogVisibleRole = false">取 消</el-button>
+          <el-button type="primary" @click="handeRole">修 改</el-button>
         </span>
       </el-dialog>
       </el-card>
@@ -218,9 +219,14 @@ export default {
       // 角色弹出层4
       dialogVisibleRole: false,
       currentUserRoleId: -1,
+      currentUserId: -1,
       currentUserName: '',
-      roles: '',
-
+      roles: [],
+      selectRolesFormData: {
+        username: '',
+        roleName: '',
+        rid: ''
+      },
       // 表单验证规则
       formRules: {
         username: [
@@ -253,10 +259,6 @@ export default {
   methods: {
     //  加载获取数据
     async loadData () {
-      // 发送前获取token
-      const token = sessionStorage.getItem('token');
-      // console.log(token);
-      this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchValue}`);
       const data = res.data;
       const { meta: { msg, status } } = data;
@@ -359,12 +361,28 @@ export default {
     async handeShowRole (user) {
       this.dialogVisibleRole = true;
       this.currentUserName = user.username;
+      this.currentUserId = user.id;
       const res = await this.$http.get('roles');
       this.roles = res.data.data;
-      console.log(this.roles);
+      console.log('roles', this.roles);
       // 找出当前角色
       const res1 = await this.$http.get(`users/${user.id}`);
       this.currentUserRoleId = res1.data.data.rid;
+    },
+    // 设置角色弹出层 功能
+    async handeRole () {
+      const res = await this.$http.put(`users/${this.currentUserId}/role`, {
+        rid: this.currentUserRoleId
+      });
+      console.log(res);
+      const meta = res.data.meta;
+      console.log(res);
+      if (meta.status === 200) {
+        this.$message.success(meta.msg);
+        this.dialogVisibleRole = false;
+      } else {
+        this.$message.error('分配角色失败');
+      }
     }
   }
 };

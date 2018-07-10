@@ -55,8 +55,6 @@ export default {
   },
   methods: {
     async loadData () {
-      // const token = sessionStorage.getItem('token');
-      // this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get('rights/list');
       console.log(res.data);
       this.list = res.data.data;

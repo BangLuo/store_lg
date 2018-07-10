@@ -8,7 +8,7 @@ MyAxios.install = function (Vue) {
     // Add a request interceptor
   instance.interceptors.request.use(function (config) {
     // 判断是否路由标识是login
-    console.log('拦截器', config);
+    // console.log('拦截器', config);
     if (config.url.toLocaleLowerCase !== 'login') {
       const token = sessionStorage.getItem('token');
       config.headers.Authorization = token;

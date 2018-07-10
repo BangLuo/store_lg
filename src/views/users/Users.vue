@@ -10,8 +10,8 @@
            <!-- 搜索框 #app公共样式影响 -->
         <el-row class="search">
           <el-col :span="24" >
-            <el-input placeholder="请输入内容" clearable  class="input-with-select" >
-              <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input placeholder="请输入内容" clearable v-model="searchValue" class="input-with-select" >
+              <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
             </el-input>
             <el-button type="success" plain>添加用户</el-button>
           </el-col>
@@ -100,7 +100,8 @@ export default {
       // 分页相关数据
       pagenum: 1, // 当前显示页
       pagesize: 2, // 每页多少条显示
-      total: 0 // 总共有多少条从后台获取
+      total: 0, // 总共有多少条从后台获取
+      searchValue: ''
     };
   },
   created () {
@@ -119,7 +120,7 @@ export default {
       const token = sessionStorage.getItem('token');
       console.log(token);
       this.$http.defaults.headers.common['Authorization'] = token;
-      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchValue}`);
       const data = res.data;
       const { meta: { msg, status } } = data;
       if (status === 200) {
@@ -132,11 +133,14 @@ export default {
         this.$message.error(msg);
       }
     },
+    // 搜索功能
+    handleSearch () {
+      this.loadData();
+      this.loading = false;
+    },
     // 开关改变状态功能
     async handleSwitchChange (user) {
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`);
-      const token = sessionStorage.getItem('token');
-      this.$http.defaults.headers.common['Authorization'] = token;
       const meta = res.data.meta;
       if (meta.status === 200) {
         this.$message(meta.msg);

@@ -13,7 +13,7 @@
             <el-input placeholder="请输入内容" clearable v-model="searchValue" class="input-with-select" >
               <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
             </el-input>
-            <el-button type="success" plain>添加用户</el-button>
+            <el-button type="success" @click="dialogVisible = true" plain>添加用户</el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -86,6 +86,31 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
+        <!-- 弹出框部分 -->
+        <!-- 添加用户 -->
+        <el-dialog
+        title="添加用户"
+        :visible.sync="dialogVisible"
+        width="60%">
+        <el-form label-position="right" label-width="120px" :model="form">
+          <el-form-item label="用户名">
+            <el-input v-model="form.username"  auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="form.password" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="form.email" ></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="form.mobile" ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
       </el-card>
     </div>
 </template>
@@ -101,7 +126,17 @@ export default {
       pagenum: 1, // 当前显示页
       pagesize: 2, // 每页多少条显示
       total: 0, // 总共有多少条从后台获取
-      searchValue: ''
+      // 绑定搜索框
+      searchValue: '',
+      // 添加用户对话框的配置数据
+      dialogVisible: false,
+      handleClose: true,
+      form: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      }
     };
   },
   created () {

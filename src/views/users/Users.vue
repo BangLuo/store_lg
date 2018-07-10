@@ -13,7 +13,7 @@
             <el-input placeholder="请输入内容" clearable v-model="searchValue" class="input-with-select" >
               <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
             </el-input>
-            <el-button type="success" @click="dialogVisible = true" plain>添加用户</el-button>
+            <el-button type="success" @click="dialogVisibleAdd = true" plain>添加用户</el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -68,8 +68,8 @@
               width="200">
               <template slot-scope="scope">
                 <el-row>
-                  <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
-                  <el-button type="success" icon="el-icon-check" plain size="mini"></el-button>
+                  <el-button type="primary" icon="el-icon-edit" plain size="mini"  @click="handeShowEdite(scope.row)"></el-button>
+                  <el-button type="success" icon="el-icon-check" plain size="mini" ></el-button>
                   <el-button type="success" icon="el-icon-delete" plain size="mini" @click="handelDel(scope.row.id)"></el-button>
                 </el-row>
               </template>
@@ -88,10 +88,10 @@
         </el-pagination>
         <!-- 弹出框部分 -->
         <!-- 添加用户 -->
-        <el-dialog
-        title="添加用户"
-        :visible.sync="dialogVisible"
-        width="60%">
+      <el-dialog
+      title="添加用户"
+      :visible.sync="dialogVisibleAdd"
+      width="60%">
         <el-form
         ref="myform"
         :rules="formRules"
@@ -119,8 +119,38 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="dialogVisibleAdd = false">取 消</el-button>
           <el-button type="primary" @click="handleAdd">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 修改用户 -->
+      <el-dialog
+      title="修改用户"
+      :visible.sync="dialogVisibleEdite"
+      width="60%">
+        <el-form
+        ref="myform"
+        :rules="formRules"
+        :model="form"
+        label-position="right" label-width="120px">
+          <el-form-item
+          label="用户名">
+            <el-input v-model="form.username" readonly disabled auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item
+          prop="email"
+          label="邮箱">
+            <el-input v-model="form.email" ></el-input>
+          </el-form-item>
+          <el-form-item
+          prop="tel"
+          label="电话">
+            <el-input v-model="form.mobile" ></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleEdite = false">取 消</el-button>
+          <el-button type="primary" @click="handleEdite">修 改</el-button>
         </span>
       </el-dialog>
       </el-card>
@@ -141,7 +171,7 @@ export default {
       // 绑定搜索框
       searchValue: '',
       // 添加用户对话框的配置数据
-      dialogVisible: false,
+      dialogVisibleAdd: false,
       handleClose: true,
       form: {
         username: '',
@@ -149,6 +179,8 @@ export default {
         email: '',
         mobile: ''
       },
+      // 修改用户信息
+      dialogVisibleEdite: false,
       // 表单验证规则
       formRules: {
         username: [
@@ -247,14 +279,41 @@ export default {
       const meta = res.data.meta;
       if (meta.status === 201) {
         this.$message(meta.msg);
-        this.dialogVisible = false;
+        this.dialogVisibleAdd = false;
         // 清空文本框的值
-        for (let key in this.formData) {
+        for (let key in this.form) {
           this.formData[key] = '';
         }
         this.loadData();
       } else {
         this.$message('添加用户失败');
+      }
+    },
+    // 修改弹出层 显示
+    handeShowEdite (user) {
+      this.dialogVisibleEdite = true;
+      this.form.username = user.username;
+      this.form.email = user.email;
+      this.form.mobile = user.mobile;
+      this.form.id = user.id;
+    },
+    // 修改弹出层 功能实现
+    async handleEdite () {
+      const res = await this.$http.put(`users/${this.form.id}`, {
+        mobile: this.form.mobile,
+        email: this.form.email
+      });
+      // 解析数据
+      const data = res.data;
+      const { meta: { status, msg } } = data;
+      if (status === 200) {
+        this.$message.success(msg);
+        this.dialogVisibleEdite = false;
+        // 清空文本框的值
+        for (let key in this.formData) {
+          this.formData[key] = '';
+        }
+        this.loadData();
       }
     }
   }

@@ -6,7 +6,7 @@ MyAxios.install = function (Vue) {
     baseURL: 'http://localhost:8888/api/private/v1/'
   });
     // Add a request interceptor
-  axios.interceptors.request.use(function (config) {
+  instance.interceptors.request.use(function (config) {
     // 判断是否路由标识是login
     console.log('拦截器', config);
     if (config.url.toLocaleLowerCase !== 'login') {

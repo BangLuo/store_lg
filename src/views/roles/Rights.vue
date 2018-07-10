@@ -9,6 +9,7 @@
           </el-breadcrumb>
           <!-- 表格 -->
           <el-table
+            height="500"
             class="tableRights"
             stripe
             border
@@ -30,8 +31,12 @@
             </el-table-column>
             <el-table-column
               prop="level"
-              label="层级"
-             >
+              label="层级">
+               <template slot-scope="scope">
+                <span v-if="scope.row.level === '0'">一级</span>
+                <span v-else-if="scope.row.level === '1'">二级</span>
+                <span v-else-if="scope.row.level === '2'">三级</span>
+               </template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -50,6 +55,8 @@ export default {
   },
   methods: {
     async loadData () {
+      // const token = sessionStorage.getItem('token');
+      // this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get('rights/list');
       console.log(res.data);
       this.list = res.data.data;

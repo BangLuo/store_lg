@@ -55,6 +55,7 @@
               width="100">
               <template slot-scope="scope">
                 <el-switch
+                @change="handleSwitchChange(scope.row)"
                 v-model="scope.row.mg_state"
                 active-color="#13ce66"
                 inactive-color="#ff4949">
@@ -112,10 +113,11 @@ export default {
     this.loading = false;
   },
   methods: {
-
+    //  加载获取数据
     async loadData () {
       // 发送前获取token
       const token = sessionStorage.getItem('token');
+      console.log(token);
       this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
       const data = res.data;
@@ -128,6 +130,18 @@ export default {
         this.list = users;
       } else {
         this.$message.error(msg);
+      }
+    },
+    // 开关改变状态功能
+    async handleSwitchChange (user) {
+      const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`);
+      const token = sessionStorage.getItem('token');
+      this.$http.defaults.headers.common['Authorization'] = token;
+      const meta = res.data.meta;
+      if (meta.status === 200) {
+        this.$message(meta.msg);
+      } else {
+        this.$message.error('修改用户状态失败');
       }
     },
     // 分页功能

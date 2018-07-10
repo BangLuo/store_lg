@@ -70,7 +70,7 @@
                 <el-row>
                   <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
                   <el-button type="success" icon="el-icon-check" plain size="mini"></el-button>
-                  <el-button type="success" icon="el-icon-delete" plain size="mini"></el-button>
+                  <el-button type="success" icon="el-icon-delete" plain size="mini" @click="handelDel(scope.row.id)"></el-button>
                 </el-row>
               </template>
             </el-table-column>
@@ -193,6 +193,18 @@ export default {
       console.log(`当前页: ${val}`);
       this.pagenum = val;
       this.loadData();
+    },
+    // 删除功能
+    async handelDel (userId) {
+      const res = await this.$http.delete(`users/${userId}`);
+      const meta = res.data.meta;
+      if (meta.status === 200) {
+        this.$message(meta.msg);
+        this.loadData();
+        this.loading = false;
+      } else {
+        this.$message.error('删除失败');
+      }
     },
     // 添加弹出层功能
     async handleAdd () {

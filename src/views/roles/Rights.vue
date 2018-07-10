@@ -19,17 +19,17 @@
             width="50">
             </el-table-column>
             <el-table-column
-              prop="username"
+              prop="authName"
               label="权限名称"
               width="150">
             </el-table-column>
             <el-table-column
-              prop="email"
+              prop="path"
               label="路径"
               width="150">
             </el-table-column>
             <el-table-column
-              prop="email"
+              prop="level"
               label="层级"
              >
             </el-table-column>
@@ -42,19 +42,18 @@
 export default {
   data () {
     return {
-      list: [],
-      created () {
-        this.loadData();
-      },
-      methods: {
-        async loadData () {
-          const res = await this.$http.get('rights/list');
-          alert(1);
-          console.log(res.data);
-          this.list = res.data.data;
-        }
-      }
+      list: []
     };
+  },
+  created () {
+    this.loadData();
+  },
+  methods: {
+    async loadData () {
+      const res = await this.$http.get('rights/list');
+      console.log(res.data);
+      this.list = res.data.data;
+    }
   }
 };
 </script>

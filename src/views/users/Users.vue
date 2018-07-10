@@ -69,7 +69,7 @@
               <template slot-scope="scope">
                 <el-row>
                   <el-button type="primary" icon="el-icon-edit" plain size="mini"  @click="handeShowEdite(scope.row)"></el-button>
-                  <el-button type="success" icon="el-icon-check" plain size="mini" ></el-button>
+                  <el-button type="success" icon="el-icon-check" plain size="mini" @click="handeShowRole(scope.row)" ></el-button>
                   <el-button type="success" icon="el-icon-delete" plain size="mini" @click="handelDel(scope.row.id)"></el-button>
                 </el-row>
               </template>
@@ -155,6 +155,38 @@
           <el-button type="primary" @click="handleEdite">修 改</el-button>
         </span>
       </el-dialog>
+      <!-- 角色分配 -->
+       <el-dialog
+      @closed="handleClose"
+      title="分配角色"
+      :visible.sync="dialogVisibleRole"
+      width="60%">
+        <el-form
+        ref="myform"
+        :rules="formRules"
+        label-position="right" label-width="80px">
+          <el-form-item
+          label="用户名">
+            {{currentUserName}}
+          </el-form-item>
+          <el-form-item
+          label="角色">
+            <!-- 下拉框 -->
+            <el-select  filterable placeholder="请选择" :value="-1">
+              <el-option
+              v-for="item in roles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleEdite = false">取 消</el-button>
+          <el-button type="primary" @click="handleEdite">修 改</el-button>
+        </span>
+      </el-dialog>
       </el-card>
     </div>
 </template>
@@ -183,6 +215,12 @@ export default {
       },
       // 修改用户信息
       dialogVisibleEdite: false,
+      // 角色弹出层4
+      dialogVisibleRole: false,
+      currentUserRoleId: -1,
+      currentUserName: '',
+      roles: '',
+
       // 表单验证规则
       formRules: {
         username: [
@@ -316,6 +354,17 @@ export default {
       for (let key in this.form) {
         this.form[key] = '';
       }
+    },
+    // 设置角色弹出层 显示
+    async handeShowRole (user) {
+      this.dialogVisibleRole = true;
+      this.currentUserName = user.username;
+      const res = await this.$http.get('roles');
+      this.roles = res.data.data;
+      console.log(this.roles);
+      // 找出当前角色
+      const res1 = await this.$http.get(`users/${user.id}`);
+      this.currentUserRoleId = res1.data.data.rid;
     }
   }
 };

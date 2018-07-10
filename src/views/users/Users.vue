@@ -90,6 +90,7 @@
         <!-- 添加用户 -->
       <el-dialog
       title="添加用户"
+      @closed="handleClosed"
       :visible.sync="dialogVisibleAdd"
       width="60%">
         <el-form
@@ -125,6 +126,7 @@
       </el-dialog>
       <!-- 修改用户 -->
       <el-dialog
+      @closed="handleClose"
       title="修改用户"
       :visible.sync="dialogVisibleEdite"
       width="60%">
@@ -280,10 +282,6 @@ export default {
       if (meta.status === 201) {
         this.$message(meta.msg);
         this.dialogVisibleAdd = false;
-        // 清空文本框的值
-        for (let key in this.form) {
-          this.formData[key] = '';
-        }
         this.loadData();
       } else {
         this.$message('添加用户失败');
@@ -309,11 +307,14 @@ export default {
       if (status === 200) {
         this.$message.success(msg);
         this.dialogVisibleEdite = false;
-        // 清空文本框的值
-        for (let key in this.formData) {
-          this.formData[key] = '';
-        }
         this.loadData();
+      }
+    },
+    // 关闭弹出层 清空文本框
+    handleClosed () {
+      // 清空文本框的值
+      for (let key in this.form) {
+        this.form[key] = '';
       }
     }
   }

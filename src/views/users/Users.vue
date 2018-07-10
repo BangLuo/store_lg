@@ -108,7 +108,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="handleAdd">确 定</el-button>
         </span>
       </el-dialog>
       </el-card>
@@ -124,7 +124,7 @@ export default {
       loading: true,
       // 分页相关数据
       pagenum: 1, // 当前显示页
-      pagesize: 2, // 每页多少条显示
+      pagesize: 6, // 每页多少条显示
       total: 0, // 总共有多少条从后台获取
       // 绑定搜索框
       searchValue: '',
@@ -153,7 +153,7 @@ export default {
     async loadData () {
       // 发送前获取token
       const token = sessionStorage.getItem('token');
-      console.log(token);
+      // console.log(token);
       this.$http.defaults.headers.common['Authorization'] = token;
       const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${this.searchValue}`);
       const data = res.data;
@@ -193,6 +193,19 @@ export default {
       console.log(`当前页: ${val}`);
       this.pagenum = val;
       this.loadData();
+    },
+    // 添加弹出层功能
+    async handleAdd () {
+      const res = await this.$http.post('users', this.form);
+      const meta = res.data.meta;
+      if (meta.status === 201) {
+        this.$message(meta.msg);
+        this.dialogVisible = false;
+      } else if (meta.status === 400) {
+        this.$message('该用户已经存在');
+      } else {
+        this.$message('添加用户失败');
+      }
     }
   }
 };

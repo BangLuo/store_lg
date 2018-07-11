@@ -13,6 +13,7 @@
           </el-row>
           <!-- 表格 -->
           <el-table
+            v-loading="loading"
             height="500"
             class="tableRoles"
             stripe
@@ -24,12 +25,12 @@
             width="50">
             </el-table-column>
             <el-table-column
-              prop="authName"
+              prop="roleName"
               label="角色名称"
               width="150">
             </el-table-column>
             <el-table-column
-              prop="path"
+              prop="roleDesc"
               label="角色描述"
               width="150">
             </el-table-column>
@@ -46,9 +47,28 @@
 <script>
 export default {
     data () {
-    return {
-      list: []
-    };
+      return {
+        list: [],
+        loading: true
+      };
+  },
+  created () {
+    this.loadData(); 
+    this.loading = false;
+  },
+  methods: {
+    // 加载角色列表
+    async loadData () {
+      const {data: resData} = await this.$http.get('roles');
+      // 解析响应数据
+      console.log('resData',resData)
+      const {data, meta} = resData;
+      if (meta.status === 200) {
+        this.list = data;
+      } else {
+        this.$message.error(meta.msg);
+      }
+    }
   }
 };
 </script>

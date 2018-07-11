@@ -222,11 +222,6 @@ export default {
       currentUserId: -1,
       currentUserName: '',
       roles: [],
-      selectRolesFormData: {
-        username: '',
-        roleName: '',
-        rid: ''
-      },
       // 表单验证规则
       formRules: {
         username: [

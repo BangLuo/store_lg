@@ -49,10 +49,8 @@ router.beforeEach((to, from, next) => {
   } else {
     router.push({name: 'login'});
     Message('请先登陆');
-    return;
   }
-
   next();
-})
+});
 
 export default router;

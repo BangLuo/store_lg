@@ -24,20 +24,18 @@
             type="expand">
               <template slot-scope="scope">
                 <!-- 当前角色的权限列表
-                scope.row ==>{roleName , 
-                roleDesc children 当前角色的所有权限}
+                scope.row ==>{roleName , roleDesc children 当前角色的所有权限}
                  -->
                  <!-- 没有权限显示无权限 -->
-                 <!-- <el-row
-                 v-if="scope.length === 0?"> -->
-
-                 </el-row>
+                 <el-row
+                 v-if="scope.row.children.length === 0">
+                 <el-col :span="24">该角色无权限</el-col>
+                </el-row>
                 <el-row
                 class="level1"
                 v-for="item1 in scope.row.children"
                 :key="item1.id"
                 >
-                
                   <!-- 显示一级权限 -->
                   <el-col :span="4">
                     <el-tag @close="handleClose(scope.row,item1.id)" closable>{{ item1.authName }}</el-tag>
@@ -84,8 +82,35 @@
             <el-table-column
               prop="level"
               label="操作">
+             <template slot-scope="scope">
+                <el-row>
+                  <el-button type="primary" icon="el-icon-edit" plain size="mini"  ></el-button>
+                  <el-button type="success" icon="el-icon-check" plain size="mini" @click="dialogVisible=true" ></el-button>
+                  <el-button type="success" icon="el-icon-delete" plain size="mini" ></el-button>
+                </el-row>
+              </template>
             </el-table-column>
           </el-table>
+          <!-- 弹出对话框 分配角色 -->
+          <el-dialog
+          @open="handleGetTree"
+          title="分配角色"
+          :visible.sync="dialogVisible"
+          width="30%"
+          :before-close="handleClose">
+          <!-- :data 提供树形数据
+           :props 设置数据显示的属性
+           default-expanded-all 默认展开所有-->
+          <el-tree
+          :data="treeData"
+          :props="defaultProps"
+          default-expanded-all
+          show-checkbox></el-tree>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          </span>
+          </el-dialog>
         </el-card>
 
     </div>
@@ -96,7 +121,16 @@ export default {
   data () {
     return {
       list: [],
-      loading: true
+      loading: true,
+      dialogVisible: false,
+      // 绑定tree所需数据
+      treeData: [],
+      // loadingTree: true,
+      // 设置数据显示的属性
+      defaultProps: {
+        children: 'children',
+        label: 'authName'
+      }
     };
   },
   created () {
@@ -129,6 +163,13 @@ export default {
       } else {
         this.$message.error(msg);
       }
+    },
+    // 获取tree
+    async handleGetTree () {
+      const { data: resData } = await this.$http.get('rights/tree');
+      // console.log(resData);
+      const { data } = resData;
+      this.treeData = data;
     }
   }
 };

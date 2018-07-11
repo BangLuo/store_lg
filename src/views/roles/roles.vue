@@ -85,31 +85,34 @@
              <template slot-scope="scope">
                 <el-row>
                   <el-button type="primary" icon="el-icon-edit" plain size="mini"  ></el-button>
-                  <el-button type="success" icon="el-icon-check" plain size="mini" @click="dialogVisible=true" ></el-button>
+                  <el-button type="success" icon="el-icon-check" plain size="mini" @click="showCurrentRights(scope.row)" ></el-button>
                   <el-button type="success" icon="el-icon-delete" plain size="mini" ></el-button>
                 </el-row>
               </template>
             </el-table-column>
           </el-table>
           <!-- 弹出对话框 分配角色 -->
+          <!-- node-key 给每一个节点绑定一个唯一值 default-checked-keys 数组中的id 就可找到该节点
+          因为node-key中需要的id在相应权限中有 即treeData中返回 因此可直接使用id -->
           <el-dialog
-          @open="handleGetTree"
-          title="分配角色"
-          :visible.sync="dialogVisible"
-          width="30%"
-          :before-close="handleClose">
-          <!-- :data 提供树形数据
-           :props 设置数据显示的属性
-           default-expanded-all 默认展开所有-->
-          <el-tree
-          :data="treeData"
-          :props="defaultProps"
-          default-expanded-all
-          show-checkbox></el-tree>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-          </span>
+            @open="handleShowRightsDialog"
+            title="权限分配"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+            <el-tree
+            ref="tree"
+            :data="treeData"
+            :props="defaultProps"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            :default-checked-keys="defaultCheckedIdList"
+            ></el-tree>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="handleSetRights">确 定</el-button>
+            </span>
           </el-dialog>
         </el-card>
 
@@ -122,15 +125,15 @@ export default {
     return {
       list: [],
       loading: true,
+      // 权限分配 所需数据
       dialogVisible: false,
-      // 绑定tree所需数据
       treeData: [],
-      // loadingTree: true,
-      // 设置数据显示的属性
       defaultProps: {
         children: 'children',
         label: 'authName'
-      }
+      },
+      roleId: -1,
+      defaultCheckedIdList: []
     };
   },
   created () {
@@ -142,7 +145,7 @@ export default {
     async loadData () {
       const {data: resData} = await this.$http.get('roles');
       // 解析响应数据
-      console.log('resData', resData);
+      // console.log('resData', resData);
       const {data, meta} = resData;
       if (meta.status === 200) {
         this.list = data;
@@ -164,12 +167,54 @@ export default {
         this.$message.error(msg);
       }
     },
-    // 获取tree
-    async handleGetTree () {
-      const { data: resData } = await this.$http.get('rights/tree');
-      // console.log(resData);
-      const { data } = resData;
+    // 点击对号，显示dialog对话框 获取tree型
+    async handleShowRightsDialog () {
+      this.dialogVisible = true;
+      // 获取treeData数据
+      const res = await this.$http.get('rights/tree');
+      const { data } = res.data;
       this.treeData = data;
+    },
+    // 显示当前角色在tree型结构上的权限
+    showCurrentRights (role) {
+      this.dialogVisible = true;
+      console.log(role);
+      this.roleId = role.id;
+      // 遍历三层权限结构的role 找出第三层权限的id 赋值给书
+      const arr = [];
+      role.children.forEach((item1) => {
+        // arr.push(item1.id);
+        // 遍历二级权限
+        item1.children.forEach((item2) => {
+          // arr.push(item2.id);
+          // 遍历三级权限
+          item2.children.forEach((item3) => {
+            arr.push(item3.id);
+          });
+        });
+      });
+      this.defaultCheckedIdList = arr;
+    },
+    // 设置分配权限
+    async handleSetRights () {
+      this.dialogVisible = false;
+      // 获取选中的nodekeys 和halfnodekeys
+      const nodekeys = this.$refs.tree.getCheckedKeys();
+      const halfnodekeys = this.$refs.tree.getHalfCheckedKeys();
+      const newArr = [...nodekeys, ...halfnodekeys];
+      // - 请求路径：roles/:roleId/rights  - 请求方法：post   rids 以 , 分割的权限 ID 列表
+      const rids = newArr.join(',');
+      const {data: resData} = await this.$http.post(`roles/${this.roleId}/rights`, {
+        rids: rids
+      });
+      const { meta: {status, msg} } = resData;
+      if (status === 200) {
+        // 权限设置成功
+        this.dialogVisible = false;
+        this.loadData();
+      } else {
+        this.$message.error(msg);
+      }
     }
   }
 };

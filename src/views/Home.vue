@@ -53,13 +53,13 @@ export default {
     this.getMenus();
   },
   // 判断是否登录 TODO
-  mounted () {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      this.$router.push({name: 'login'});
-      this.$message.warning('请先登录');
-    }
-  },
+  // beforeCreate () {
+  //   const token = sessionStorage.getItem('token');
+  //   if (!token) {
+  //     this.$router.push({name: 'login'});
+  //     this.$message.warning('请先登录');
+  //   }
+  // },
   methods: {
     // 退出
     handleLoginOut() {
@@ -77,7 +77,7 @@ export default {
     async getMenus () {
       const { data: resData } = await this.$http.get('menus');
       this.menuLists = resData.data;
-      console.log(resData.data);
+      // console.log(resData.data);
     }
   }
 };

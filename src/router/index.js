@@ -5,6 +5,7 @@ import Home from '@/views/Home';
 import Users from '@/views/users/Users';
 import Rights from '@/views/roles/Rights';
 import Roles from '@/views/roles/Roles';
+import { Message } from 'element-ui';
 
 Vue.use(Router);
 const router = new Router({
@@ -41,5 +42,17 @@ const router = new Router({
     }
   ]
 });
+router.beforeEach((to, from, next) => {
+  // 判断是否是登路 是 next 不是 需要token
+  if (to.name === 'login') {
+    next();
+  } else {
+    router.push({name: 'login'});
+    Message('请先登陆');
+    return;
+  }
+
+  next();
+})
 
 export default router;

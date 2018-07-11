@@ -40,7 +40,7 @@
                 
                   <!-- 显示一级权限 -->
                   <el-col :span="4">
-                    <el-tag @close="handleClose(scope.row.id,item1.id)" closable>{{ item1.authName }}</el-tag>
+                    <el-tag @close="handleClose(scope.row,item1.id)" closable>{{ item1.authName }}</el-tag>
                   </el-col>
                   <el-col :span="20">
                      <!-- 二级权限 -->
@@ -48,12 +48,12 @@
                     v-for="item2 in item1.children"
                     :key="item2.id">
                       <el-col :span="4">
-                        <el-tag closable @close="handleClose(scope.row.id,item2.id)"  type="success">{{ item2.authName }}</el-tag>
+                        <el-tag closable @close="handleClose(scope.row,item2.id)"  type="success">{{ item2.authName }}</el-tag>
                       </el-col>
                       <!-- 三级权限 -->
                       <el-col :span="20">
                         <el-tag
-                        @close="handleClose(scope.row.id,item3.id)"
+                        @close="handleClose(scope.row,item3.id)"
                         calss="level3"
                         closable
                         type="error"
@@ -117,13 +117,15 @@ export default {
       }
     },
     // 删除对应权限
-    async handleClose (roleId, rightId) {
-      const { data: resData } = await this.$http.delete(`roles/${roleId}/rights/${rightId}`);
-      const { meta: { status, msg } } = resData;
+    async handleClose (role, rightId) {
+      const { data: resData } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`);
+      const { data, meta: { status, msg } } = resData;
       if (status === 200) {
         // 重新渲染下拉展开
         this.$message.success(msg);
-        this.loadData();
+        // this.loadData();数据全部渲染 用户体验差
+        // 通过更改scope.row.children 并保持权限展开 拿到role 更改参数即可
+        role.children = data;
       } else {
         this.$message.error(msg);
       }

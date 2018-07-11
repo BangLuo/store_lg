@@ -21,6 +21,26 @@
             :data="list"
             style="width: 100%">
             <el-table-column
+            type="expand">
+              <template slot-scope="scope">
+                <!-- 当前角色的权限列表
+                scope.row ==>{roleName , 
+                roleDesc children 当前角色的所有权限}
+                 -->
+                <el-row
+                v-for="item1 in scope.row.children"
+                :key="item1.id"
+                >
+                  <!-- 一级权限 -->
+                  <el-col :span="4">
+                    <el-tag>{{ item1.authName}}</el-tag>
+                  </el-col>
+                  <!-- 二级权限 -->
+                  <el-col :span="20"></el-col>
+                </el-row>
+              </template>
+            </el-table-column>
+            <el-table-column
             type="index"
             width="50">
             </el-table-column>
@@ -46,14 +66,14 @@
 
 <script>
 export default {
-    data () {
-      return {
-        list: [],
-        loading: true
-      };
+  data () {
+    return {
+      list: [],
+      loading: true
+    };
   },
   created () {
-    this.loadData(); 
+    this.loadData();
     this.loading = false;
   },
   methods: {
@@ -61,7 +81,7 @@ export default {
     async loadData () {
       const {data: resData} = await this.$http.get('roles');
       // 解析响应数据
-      console.log('resData',resData)
+      console.log('resData', resData);
       const {data, meta} = resData;
       if (meta.status === 200) {
         this.list = data;

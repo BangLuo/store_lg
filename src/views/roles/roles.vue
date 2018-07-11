@@ -40,7 +40,7 @@
                 
                   <!-- 显示一级权限 -->
                   <el-col :span="4">
-                    <el-tag closable>{{ item1.authName }}</el-tag>
+                    <el-tag @close="handleClose(scope.row.id,item1.id)" closable>{{ item1.authName }}</el-tag>
                   </el-col>
                   <el-col :span="20">
                      <!-- 二级权限 -->
@@ -48,11 +48,12 @@
                     v-for="item2 in item1.children"
                     :key="item2.id">
                       <el-col :span="4">
-                        <el-tag closable type="success">{{ item2.authName }}</el-tag>
+                        <el-tag closable @close="handleClose(scope.row.id,item2.id)"  type="success">{{ item2.authName }}</el-tag>
                       </el-col>
                       <!-- 三级权限 -->
                       <el-col :span="20">
                         <el-tag
+                        @close="handleClose(scope.row.id,item3.id)"
                         calss="level3"
                         closable
                         type="error"
@@ -113,6 +114,18 @@ export default {
         this.list = data;
       } else {
         this.$message.error(meta.msg);
+      }
+    },
+    // 删除对应权限
+    async handleClose (roleId, rightId) {
+      const { data: resData } = await this.$http.delete(`roles/${roleId}/rights/${rightId}`);
+      const { meta: { status, msg } } = resData;
+      if (status === 200) {
+        // 重新渲染下拉展开
+        this.$message.success(msg);
+        this.loadData();
+      } else {
+        this.$message.error(msg);
       }
     }
   }

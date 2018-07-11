@@ -31,12 +31,24 @@
                 v-for="item1 in scope.row.children"
                 :key="item1.id"
                 >
-                  <!-- 一级权限 -->
+                  <!-- 显示一级权限 -->
                   <el-col :span="4">
-                    <el-tag>{{ item1.authName}}</el-tag>
+                    <el-tag>{{ item1.authName }}</el-tag>
                   </el-col>
-                  <!-- 二级权限 -->
-                  <el-col :span="20"></el-col>
+                 
+                  <el-col :span="20">
+                     <!-- 二级权限 -->
+                    <el-row
+                    v-for="item2 in item1.children"
+                    :key="item2.id">
+                      <el-row :span="4">
+                        <el-tag type="success">{{ item2.authName }}</el-tag>
+                      </el-row>
+                      <el-row :span="20">
+
+                      </el-row>
+                    </el-row>
+                  </el-col>
                 </el-row>
               </template>
             </el-table-column>

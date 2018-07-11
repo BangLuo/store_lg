@@ -47,10 +47,13 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'login') {
     next();
   } else {
-    router.push({name: 'login'});
-    Message('请先登陆');
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      router.push({name: 'login'});
+      Message('请先登陆');
+    }
+    next();
   }
-  next();
 });
 
 export default router;

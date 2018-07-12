@@ -24,6 +24,21 @@
             prop="cat_name"
             label="分类名称"
             width="150">
+              <!-- tree grid
+                treeKey 绑定到id，给每一个节点设置一个唯一值
+                parentKey 绑定到父id属性，区分父子节点
+                levelKey 绑定到层级的属性 
+                childKey 绑定到存储子元素的属性
+              -->
+              <el-tree-grid
+                prop="cat_name"
+                label="分类名称"
+                treeKey="cat_id"
+                parentKey="cat_pid"
+                levelKey="cat_level"
+                childKey="children"
+                :indentSize="30">
+              </el-tree-grid>
           </el-table-column>
           <el-table-column
             label="级别"
@@ -69,6 +84,8 @@
 </template>
 
 <script>
+// 引入局部组件 treegrid
+import ElTreeGrid from 'element-tree-grid';
 export default {
   data () {
     return {
@@ -107,6 +124,9 @@ export default {
       this.pagenum = val;
       this.loadData();
     }
+  },
+  components: {
+    ElTreeGrid
   }
 };
 </script>

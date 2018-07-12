@@ -6,7 +6,7 @@ import Users from '@/views/users/Users';
 import Rights from '@/views/roles/Rights';
 import Roles from '@/views/roles/Roles';
 import { Message } from 'element-ui';
-
+import Categories from '@/views/goods/Categories';
 Vue.use(Router);
 const router = new Router({
   routes: [
@@ -37,6 +37,11 @@ const router = new Router({
           name: 'roles',
           path: '/roles',
           component: Roles
+        },
+        {
+          name: 'categories',
+          path: 'categories',
+          component: Categories
         }
       ]
     }

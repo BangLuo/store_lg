@@ -52,7 +52,7 @@
             label="操作">
             <template slot-scope="scope">
               <el-row>
-                <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+                <el-button type="primary" icon="el-icon-edit" @click="handleShowEdit(scope.row)" plain size="mini"></el-button>
                 <el-button type="success" icon="el-icon-check" plain size="mini"></el-button>
                 <el-button type="success" icon="el-icon-delete" @click="handleDel(scope.row.cat_id)" plain size="mini"></el-button>
               </el-row>
@@ -96,6 +96,32 @@
             <el-button type="primary" @click="handleAddCat">确 定</el-button>
           </span>
       </el-dialog>
+      <!-- 编辑dialog部分 -->
+        <el-dialog
+        title="编辑商品分类"
+        :visible.sync="dialogEditVisible"
+        width="80%">
+        <el-form label-width="100px" v-model="EditeForm" height="400px" >
+            <el-form-item label="分类名称" >
+              <el-input v-model="EditeForm.cat_name"></el-input>
+            </el-form-item>
+          <el-form-item label="父级分类" width="100px">
+            <!-- <el-cascader
+              :options="options"
+              v-model="selectedOptions"
+              :props="{
+              label: 'cat_name',
+              value: 'cat_id',
+              children: 'children'
+              }">
+            </el-cascader> -->
+           </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogEditVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleEditCat">修改</el-button>
+          </span>
+      </el-dialog>
       </el-card>
     </div>
 </template>
@@ -115,12 +141,20 @@ export default {
       total: -1,
       // 添加
       dialogAddVisible: false,
+      dialogEditVisible: false,
       addCatName: '',
       options: [],
       selectedOptions: [],
-      AddForm: {
+        AddForm: {
+        cat_name: ''
+      },
+      // 修改
+      // optionsEdit: [],
+      // selectedOptionsEdit: [],
+      EditeForm: {
         cat_name: ''
       }
+
     };
   },
   created () {
@@ -178,7 +212,7 @@ export default {
           this.$message.error(msg);
        }
     },
-    // 点击删除按钮 实现删除
+    // 点击删除按钮 实现删除 (TODO BUGGER)
     async handleDel (id) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -197,7 +231,16 @@ export default {
           
         )
       
-    }    
+    },
+    // 点击按钮 实现编辑dialog 显示
+    handleShowEdit (cat) {
+      this.dialogEditVisible = true;    
+      this.EditeForm = cat;
+    },
+    // 点击 编辑按钮 实现编辑功能
+    handleEditCat () {
+      alert('百年祭');
+    }
   },
   components: {
     ElTreeGrid

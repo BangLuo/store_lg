@@ -22,21 +22,15 @@
           type="index"
           width="50">
           </el-table-column>
-              <!-- tree grid
-                treeKey 绑定到id，给每一个节点设置一个唯一值
-                parentKey 绑定到父id属性，区分父子节点
-                levelKey 绑定到层级的属性 
-                childKey 绑定到存储子元素的属性
-              -->
-              <el-tree-grid
-                prop="cat_name"
-                label="分类名称"
-                treeKey="cat_id"
-                parentKey="cat_pid"
-                levelKey="cat_level"
-                childKey="children"
-                :indentSize="30">
-              </el-tree-grid>
+          <el-tree-grid
+            prop="cat_name"
+            label="分类名称"
+            treeKey="cat_id"
+            parentKey="cat_pid"
+            levelKey="cat_level"
+            childKey="children"
+            :indentSize="30">
+          </el-tree-grid>
           <el-table-column
             label="级别"
             width="150">
@@ -81,15 +75,22 @@
         title="添加商品分类"
         :visible.sync="dialogAddVisible"
         width="80%">
-        <el-form label-width="100px" width="150px">
-            <el-form-item label="分类名称">
-              <el-input v-model="addCatName"></el-input>
+        <el-form ref="AddForm" label-width="100px" v-model="AddForm" >
+            <el-form-item label="分类名称" >
+              <el-input v-model="AddForm.cat_name"></el-input>
             </el-form-item>
-          <el-cascader
-            :options="options"
-            v-model="selectedOptions"
-            change-on-select>
-          </el-cascader>
+          <el-form-item label="父级分类" width="100px">
+            <el-cascader
+              :options="options"
+              v-model="selectedOptions"
+              :props="{
+              label: 'cat_name',
+              value: 'cat_id',
+              children: 'children'
+              }"
+              >
+            </el-cascader>
+           </el-form-item>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -113,12 +114,14 @@ export default {
       pagenum: 1,
       pagesize: 5,
       total: -1,
-      //添加
+      // 添加
       dialogAddVisible: false,
       addCatName: '',
       options: [],
       selectedOptions: [],
-
+      AddForm: {
+        cat_name: ''
+      }
     };
   },
   created () {
@@ -150,12 +153,14 @@ export default {
     async handleShowAdd () {
       this.dialogAddVisible = true;
       const {data: resData} = await this.$http.get('categories?type=2');
-      console.log(resData);
-      const { data, meta } = resData; 
+      // console.log(resData);
+      const { data, meta } = resData;
       console.log(data);
 
       this.options = data;
+      // console.log(this.options);数据已经获取到 但是没有呈现
     }
+    
   },
   components: {
     ElTreeGrid

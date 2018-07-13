@@ -1,14 +1,15 @@
 <template>
     <div>
-        <el-card class="box-card">
+      <el-card class="box-card">
         <!-- 面包屑 -->
         <my-breadcrumb level1="商品管理"  level2="商品列表"></my-breadcrumb>
         <!--添加分类-->
         <el-row class="addgoods">
           <el-col :span="24">
             <el-button
+            @click="$router.push({name: 'goods-add'})"
             plain type="success"
-           >添加分类</el-button>
+           >添加商品</el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -100,12 +101,11 @@ export default {
       pagenum: 1,
       pagesize: 5,
       total: -1,
-      //添加
+      // 添加
       dialogAddVisible: false,
       addCatName: '',
       options: [],
-      selectedOptions: [],
-
+      selectedOptions: []
     };
   },
   created () {
@@ -133,8 +133,7 @@ export default {
       this.loading = true;
       this.pagenum = val;
       this.loadData();
-    },
-   
+    }
   }
 };
 </script>

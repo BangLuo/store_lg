@@ -105,22 +105,13 @@
             <el-form-item label="分类名称" >
               <el-input v-model="EditeForm.cat_name"></el-input>
             </el-form-item>
-          <el-form-item label="父级分类" width="100px">
-            <!-- <el-cascader
-              :options="options"
-              v-model="selectedOptions"
-              :props="{
-              label: 'cat_name',
-              value: 'cat_id',
-              children: 'children'
-              }">
-            </el-cascader> -->
-           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogEditVisible = false">取 消</el-button>
-            <el-button type="primary" @click="handleEditCat">修改</el-button>
-          </span>
+          <el-button @click="dialogEditVisible = false">取 消</el-button>
+          <el-button type="primary" @click="handleEditCat">修改</el-button>
+        </span>
+          
+          
       </el-dialog>
       </el-card>
     </div>
@@ -153,7 +144,8 @@ export default {
       // selectedOptionsEdit: [],
       EditeForm: {
         cat_name: ''
-      }
+      },
+      editCatId: '',
 
     };
   },
@@ -220,6 +212,7 @@ export default {
           type: 'warning',
           center: true
         }).then(async () =>{
+          this.editCatId = id;
           const { data: { meta } } = await this.$http.delete(`categories/${id}`);
           if ( meta.status === 200 ) {
             this.$message.success(meta.msg);
@@ -230,16 +223,25 @@ export default {
         }
           
         )
-      
     },
     // 点击按钮 实现编辑dialog 显示
     handleShowEdit (cat) {
       this.dialogEditVisible = true;    
       this.EditeForm = cat;
+      console.log(this.editCatId);
     },
     // 点击 编辑按钮 实现编辑功能
-    handleEditCat () {
-      alert('百年祭');
+    async handleEditCat () {
+      const { cat_id, cat_name } = this.EditeForm;
+      const { data: resData } = await this.$http.put(`categories/${cat_id}`,{ cat_name: cat_name });
+      const { data, meta: { status, msg } } = resData;
+      if ( status === 200 ) {
+        this.dialogEditVisible = false;
+        this.$message.success(msg);
+      } else {
+        this.$message.error(msg);
+      }
+
     }
   },
   components: {

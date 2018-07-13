@@ -54,7 +54,7 @@
               <el-row>
                 <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
                 <el-button type="success" icon="el-icon-check" plain size="mini"></el-button>
-                <el-button type="success" icon="el-icon-delete" plain size="mini"></el-button>
+                <el-button type="success" icon="el-icon-delete" @click="handleDel(scope.row.cat_id)" plain size="mini"></el-button>
               </el-row>
             </template>
           </el-table-column>
@@ -159,7 +159,7 @@ export default {
       this.options = data;
       // console.log(this.options);数据已经获取到 但是没有呈现
     },
-    // 提交数据 完成添加分类
+    // 提交数据 完成添加分类 功能
     async handleAddCat () {
       // 获取所有参数
       const params = {
@@ -177,9 +177,27 @@ export default {
        } else {
           this.$message.error(msg);
        }
-
-    }
-    
+    },
+    // 点击删除按钮 实现删除
+    async handleDel (id) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(async () =>{
+          const { data: { meta } } = await this.$http.delete(`categories/${id}`);
+          if ( meta.status === 200 ) {
+            this.$message.success(meta.msg);
+            this.loadData();
+          } else {
+            this.$message.error(meta.msg);
+          }
+        }
+          
+        )
+      
+    }    
   },
   components: {
     ElTreeGrid

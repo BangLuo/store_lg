@@ -108,9 +108,10 @@ export default {
   methods: {
     // 获取列表数据
     async loadData () {
-      const { data: resData } = await this.$http.get(`categories?type=3&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
-      const { result, total } = resData.data;
-      this.list = result;
+      const { data: resData } = await this.$http.get(`/goods?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      const { goods, total } = resData.data;
+      console.log(resData);
+      this.list = goods;
       this.total = total;
       this.loading = false;
     },

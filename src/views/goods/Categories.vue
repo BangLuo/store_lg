@@ -75,7 +75,7 @@
         title="添加商品分类"
         :visible.sync="dialogAddVisible"
         width="80%">
-        <el-form ref="AddForm" label-width="100px" v-model="AddForm" >
+        <el-form ref="AddForm" label-width="100px" v-model="AddForm" height="400px" >
             <el-form-item label="分类名称" >
               <el-input v-model="AddForm.cat_name"></el-input>
             </el-form-item>
@@ -87,15 +87,14 @@
               label: 'cat_name',
               value: 'cat_id',
               children: 'children'
-              }"
-              >
+              }">
             </el-cascader>
            </el-form-item>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
         </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleAddCat">确 定</el-button>
+          </span>
       </el-dialog>
       </el-card>
     </div>
@@ -149,16 +148,36 @@ export default {
       this.pagenum = val;
       this.loadData();
     },
-    // 添加dialog 完成基本布局
+    // 添加dialog 完成基本布局 show
     async handleShowAdd () {
       this.dialogAddVisible = true;
       const {data: resData} = await this.$http.get('categories?type=2');
       // console.log(resData);
       const { data, meta } = resData;
       console.log(data);
-
+      console.log(data);
       this.options = data;
       // console.log(this.options);数据已经获取到 但是没有呈现
+    },
+    // 提交数据 完成添加分类
+    async handleAddCat () {
+      // 获取所有参数
+      const params = {
+        ...this.AddForm,
+        // 取出对应的pid([1,2,3] 只要最后一层分类)
+        cat_pid: this.selectedOptions[this.selectedOptions.length-1],
+        cat_level: this.selectedOptions.length
+      };     
+      const {data: resData} = await this.$http.post('categories', params );
+       console.log(resData);
+       const { meta: { status, msg} } = resData;
+       if( status === 201) {
+         this.dialogAddVisible = false;
+         this.$message.success(msg);
+       } else {
+          this.$message.error(msg);
+       }
+
     }
     
   },

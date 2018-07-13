@@ -110,8 +110,6 @@
           <el-button @click="dialogEditVisible = false">取 消</el-button>
           <el-button type="primary" @click="handleEditCat">修改</el-button>
         </span>
-          
-          
       </el-dialog>
       </el-card>
     </div>
@@ -136,7 +134,7 @@ export default {
       addCatName: '',
       options: [],
       selectedOptions: [],
-        AddForm: {
+      AddForm: {
         cat_name: ''
       },
       // 修改
@@ -145,8 +143,7 @@ export default {
       EditeForm: {
         cat_name: ''
       },
-      editCatId: '',
-
+      editCatId: ''
     };
   },
   created () {
@@ -179,9 +176,7 @@ export default {
       this.dialogAddVisible = true;
       const {data: resData} = await this.$http.get('categories?type=2');
       // console.log(resData);
-      const { data, meta } = resData;
-      console.log(data);
-      console.log(data);
+      const { data } = resData;
       this.options = data;
       // console.log(this.options);数据已经获取到 但是没有呈现
     },
@@ -191,57 +186,60 @@ export default {
       const params = {
         ...this.AddForm,
         // 取出对应的pid([1,2,3] 只要最后一层分类)
-        cat_pid: this.selectedOptions[this.selectedOptions.length-1],
+        cat_pid: this.selectedOptions[this.selectedOptions.length - 1],
         cat_level: this.selectedOptions.length
-      };     
-      const {data: resData} = await this.$http.post('categories', params );
-       console.log(resData);
-       const { meta: { status, msg} } = resData;
-       if( status === 201) {
-         this.dialogAddVisible = false;
-         this.$message.success(msg);
-       } else {
-          this.$message.error(msg);
-       }
+      };
+      const {data: resData} = await this.$http.post('categories', params);
+      console.log(resData);
+      const { meta: {status, msg} } = resData;
+      if (status === 201) {
+        this.dialogAddVisible = false;
+        this.$message.success(msg);
+      } else {
+        this.$message.error(msg);
+      }
     },
     // 点击删除按钮 实现删除 (TODO BUGGER)
     async handleDel (id) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          center: true
-        }).then(async () =>{
-          this.editCatId = id;
-          const { data: { meta } } = await this.$http.delete(`categories/${id}`);
-          if ( meta.status === 200 ) {
-            this.$message.success(meta.msg);
-            this.loadData();
-          } else {
-            this.$message.error(meta.msg);
-          }
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(async () => {
+        this.editCatId = id;
+        const { data: { meta } } = await this.$http.delete(`categories/${id}`);
+        if (meta.status === 200) {
+          this.$message.success(meta.msg);
+          this.loadData();
+        } else {
+          this.$message.error(meta.msg);
         }
-          
-        )
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     // 点击按钮 实现编辑dialog 显示
     handleShowEdit (cat) {
-      this.dialogEditVisible = true;    
+      this.dialogEditVisible = true;
       this.EditeForm = cat;
       console.log(this.editCatId);
     },
     // 点击 编辑按钮 实现编辑功能
     async handleEditCat () {
+      console.log(this.EditeForm);
       const { cat_id, cat_name } = this.EditeForm;
-      const { data: resData } = await this.$http.put(`categories/${cat_id}`,{ cat_name: cat_name });
-      const { data, meta: { status, msg } } = resData;
-      if ( status === 200 ) {
+      const { data: resData } = await this.$http.put(`categories/${cat_id}`, { cat_name: cat_name });
+      const { meta: { status, msg } } = resData;
+      if (status === 200) {
         this.dialogEditVisible = false;
         this.$message.success(msg);
       } else {
         this.$message.error(msg);
       }
-
     }
   },
   components: {

@@ -27,20 +27,18 @@
             </el-form-item>
             <el-form-item label="商品数量">
               <el-input v-model="form.goods_number"></el-input>
-            </el-form-item>  
+            </el-form-item>
             <el-cascader
               lable="选择分类"
               :options="options"
               v-model="selectedOptions"
               change-on-select>
-            </el-cascader>  
+            </el-cascader>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="商品图片" name="1">商品图片</el-tab-pane>
         <el-tab-pane label="商品详情" name="2">商品详情</el-tab-pane>
       </el-tabs>
-      <!--  -->
-
     </el-card>
 </template>
 
@@ -56,18 +54,18 @@ export default {
         goods_price: '',
         goods_weight: '',
         goods_number: '',
-        goods_cat: '',//字符串
+        goods_cat: ''
       },
       options: [],
       selectedOptions: []
-    }
+    };
   },
   methods: {
     HandleClick () {
-      console.log(111)
+      console.log(111);
     }
   }
-}
+};
 </script>
 
 <style>

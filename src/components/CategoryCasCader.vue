@@ -20,17 +20,16 @@ export default {
     return {
       options: [],
       selectedOptions: []
-    }
+    };
   },
   props: ['type'],
   async created () {
-    const {data: resData} = await this.$http.get('categories',{
-      params:{
+    const {data: resData} = await this.$http.get('categories', {
+      params: {
         type: this.type
       }
     });
     this.options = resData.data;
-
   },
   methods: {
     // 当前数据通过事件方式传出
@@ -40,10 +39,9 @@ export default {
       this.$emit(this.selectedOptions);
     }
   }
-}
+};
 </script>
 
 <style>
 
 </style>
-

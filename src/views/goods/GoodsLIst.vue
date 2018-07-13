@@ -2,13 +2,13 @@
     <div>
         <el-card class="box-card">
         <!-- 面包屑 -->
-        <my-breadcrumb level1="商品管理"  level2="商品分类"></my-breadcrumb>
+        <my-breadcrumb level1="商品管理"  level2="商品列表"></my-breadcrumb>
         <!--添加分类-->
         <el-row class="addgoods">
           <el-col :span="24">
             <el-button
             plain type="success"
-            @click="handleShowAdd">添加分类</el-button>
+           >添加分类</el-button>
           </el-col>
         </el-row>
         <!-- 表格 -->
@@ -22,37 +22,20 @@
           type="index"
           width="50">
           </el-table-column>
-              <!-- tree grid
-                treeKey 绑定到id，给每一个节点设置一个唯一值
-                parentKey 绑定到父id属性，区分父子节点
-                levelKey 绑定到层级的属性 
-                childKey 绑定到存储子元素的属性
-              -->
-              <el-tree-grid
-                prop="cat_name"
-                label="分类名称"
-                treeKey="cat_id"
-                parentKey="cat_pid"
-                levelKey="cat_level"
-                childKey="children"
-                :indentSize="30">
-              </el-tree-grid>
           <el-table-column
-            label="级别"
-            width="150">
-              <template slot-scope="scope">
-              <span v-if="scope.row.cat_level === 0">一级</span>
-              <span v-else-if="scope.row.cat_level === 1">二级</span>
-              <span v-else-if="scope.row.cat_level === 2">三级</span>
-              </template>
+          prop="goods_name"
+          label="商品名称"
+          >
           </el-table-column>
           <el-table-column
-            prop="cat_deleted"
-            label="是否有效">
-            <template slot-scope="scope">
-              {{ scope.row.cat_deleted === true? '无效' : '有效' }}
-              </template>
+          prop="goods_price"
+          label="商品价格">
           </el-table-column>
+           <el-table-column
+          prop="goods_price"
+          label="商品价格">
+          </el-table-column>
+          
           <el-table-column
             prop="level"
             label="操作">
@@ -77,32 +60,30 @@
           :total="total">
         </el-pagination>
         <!-- 添加dialog部分 -->
-        <el-dialog
-        title="添加商品分类"
-        :visible.sync="dialogAddVisible"
-        width="80%">
-        <el-form label-width="100px" width="150px">
-            <el-form-item label="分类名称">
-              <el-input v-model="addCatName"></el-input>
-            </el-form-item>
-          <el-cascader
-            :options="options"
-            v-model="selectedOptions"
-            change-on-select>
-          </el-cascader>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        </span>
-        </el-form>
-      </el-dialog>
+        <!-- <el-dialog
+          title="添加商品分类"
+          :visible.sync="dialogAddVisible"
+          width="80%">
+          <el-form label-width="100px" width="150px">
+              <el-form-item label="分类名称">
+                <el-input v-model="addCatName"></el-input>
+              </el-form-item>
+            <el-cascader
+              :options="options"
+              v-model="selectedOptions"
+              change-on-select>
+            </el-cascader>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          </span>
+          </el-form>
+        </el-dialog> -->
       </el-card>
     </div>
 </template>
 
 <script>
-// 引入局部组件 treegrid
-import ElTreeGrid from 'element-tree-grid';
 export default {
   data () {
     return {
@@ -146,19 +127,7 @@ export default {
       this.pagenum = val;
       this.loadData();
     },
-    // 添加dialog 完成基本布局
-    async handleShowAdd () {
-      this.dialogAddVisible = true;
-      const {data: resData} = await this.$http.get('categories?type=2');
-      console.log(resData);
-      const { data, meta } = resData; 
-      console.log(data);
-
-      this.options = data;
-    }
-  },
-  components: {
-    ElTreeGrid
+   
   }
 };
 </script>

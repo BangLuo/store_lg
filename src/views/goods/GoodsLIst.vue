@@ -32,10 +32,16 @@
           label="商品价格">
           </el-table-column>
            <el-table-column
-          prop="goods_price"
-          label="商品价格">
+          prop="add_time"
+          label="创建事件">
+            <template slot-scope="scope">
+              {{ scope.row.add_time | fmData('YYYY-MM-DD') }}
+            </template>
+            </el-table-column>
+           <el-table-column
+          prop="goods_weight"
+          label="商品重量">
           </el-table-column>
-          
           <el-table-column
             prop="level"
             label="操作">

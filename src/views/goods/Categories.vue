@@ -80,15 +80,7 @@
               <el-input v-model="AddForm.cat_name"></el-input>
             </el-form-item>
           <el-form-item label="父级分类" width="100px">
-            <el-cascader
-              :options="options"
-              v-model="selectedOptions"
-              :props="{
-              label: 'cat_name',
-              value: 'cat_id',
-              children: 'children'
-              }">
-            </el-cascader>
+            <category-cas-cader type="2"></category-cas-cader>
            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -116,6 +108,7 @@
 </template>
 
 <script>
+import CategoryCasCader from '@/components/CategoryCasCader';
 // 引入局部组件 treegrid
 import ElTreeGrid from 'element-tree-grid';
 export default {
@@ -243,7 +236,8 @@ export default {
     }
   },
   components: {
-    ElTreeGrid
+    ElTreeGrid,
+    CategoryCasCader
   }
 };
 </script>

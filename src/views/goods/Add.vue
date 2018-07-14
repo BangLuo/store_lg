@@ -38,7 +38,7 @@
               children: 'children'
               }">
             </el-cascader> -->
-              <category-cas-cader type="2"></category-cas-cader>
+              <category-cas-cader type="2" @ChildChange="handleChildChange"></category-cas-cader>
            </el-form-item>
            <el-button plain type="success" @click="creatIm">立即创建</el-button>
           </el-form>
@@ -130,11 +130,33 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
+      // 子组件传值函数
+    handleChildChange (data) {
+      this.form.goods_cat = data.join(',');
+    },
     // 提交商品信息 完成商品添加功能
-    creatIm () {
-      alert(1);
+    async creatIm () {
       console.log(this.form);
+      const { data: resData } = await this.$http.post('/goods', {
+        goods_name: 111,
+        goods_price: 2,
+        goods_number: 3,
+        goods_cat: '1,1',
+        goods_number: 4
+      });
+      console.log(resData);
+      console.log(resData);
+      const meta = resData.meta;
+      
+      // if (meta.status === 201) {
+      //   this.$message.success(meta.msg);
+      //   this.loadData();
+      // } else {
+      //   this.$message.error(meta.msg);
+      // }
     }
+  
+
   },
   components: {
     quillEditor,

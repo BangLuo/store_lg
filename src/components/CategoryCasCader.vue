@@ -8,7 +8,9 @@
           label: 'cat_name',
           value: 'cat_id',
           children: 'children'
-        }">
+        }"
+        @change="handleChange"
+          >
       </el-cascader>
 </template>
 
@@ -35,12 +37,12 @@ export default {
     this.options = resData.data;
   },
   methods: {
-    // // 当前数据通过事件方式传出
-    // handleChange () {
-    //   // $emite 对外部发布一个自定义事件 外部就是使用该组件的父组件
-    //   // 然后在调用时 使用传送
-    //   this.$emit(this.selectedOptions);
-    // }
+    // 当前数据通过事件方式传出
+    handleChange () {
+      // $emite 对外部发布一个自定义事件 外部就是使用该组件的父组件
+      // 然后在调用时 使用传送
+      this.$emit('ChildChange', this.selectedOptions);
+    }
   }
 };
 </script>

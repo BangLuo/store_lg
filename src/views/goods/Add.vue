@@ -71,10 +71,8 @@
             ref="myQuillEditor"
             :options="editorOption">
           </quill-editor>
-          <el-button class="handle-add-com" plain type="success" @click="handleAddCom">提交完整信息</el-button>
-          <el-button plain type="success" @click="creatIm">提交基本信息</el-button>
+          <el-button plain type="success" class="handle-add" @click="creatAdd">提交</el-button>
         </el-tab-pane>
-         
       </el-tabs>
     </el-card>
 </template>
@@ -84,11 +82,11 @@
 import CategoryCasCader from '@/components/CategoryCasCader';
 // 引入 富文本编辑
 // require styles
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.bubble.css';
 
-import { quillEditor } from 'vue-quill-editor'
+import { quillEditor } from 'vue-quill-editor';
 
 export default {
   data () {
@@ -105,23 +103,21 @@ export default {
       },
       options: [],
       selectedOptions: [],
-      content: '',     
+      content: '',
       // 上传图片 设置token请求头
       headers: {
         Authorization: window.sessionStorage.getItem('token')
-      }, 
+      },
       pics: [
         // {pic: ''}
       ],
       fileList: [{
-        name: '', 
+        name: '',
         url: ''
-        }],
+      }],
       // 富文本编辑器 所需数据
       editorOption: {
-        
-      },
-
+      }
     };
   },
   created () {
@@ -131,7 +127,7 @@ export default {
     HandleClick () {
       console.log(111);
     },
-     // 添加dialog 完成基本布局 show
+    // 添加dialog 完成基本布局 show
     async loadData() {
       const {data: resData} = await this.$http.get('categories?type=3');
       // console.log(resData);
@@ -141,30 +137,16 @@ export default {
     },
     // 下一步
     nextTab () {
-     
     },
-    // 处理图片上传部分
-    // 处理删除图片TODO
-    handleRemove(file, fileList) {
-      console.log('删除图片', file, fileList);
-
-      // 
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-      // 子组件传值函数
+    // 子组件传值函数
     handleChildChange (data) {
       this.form.goods_cat = data.join(',');
     },
     // 提交商品基本信息 完成商品添加功能
-    async creatIm () {
-      console.log(this.form);
+    async creatAdd () {
+      console.log('商品添加', this.form);
       const { data: resData } = await this.$http.post('/goods', this.form);
-      console.log(resData);
-      console.log(resData);
       const meta = resData.meta;
-      
       if (meta.status === 201) {
         this.$message.success(meta.msg);
         this.loadData();
@@ -172,19 +154,23 @@ export default {
         this.$message.error(meta.msg);
       }
     },
-    handleAddCom () {
-      console.log('handleAddCom');
+    // 处理图片上传部分
+    handlePreview(file) {
+      console.log(file);
     },
     // 图片上传 成功 TODO
     handleUploadSuccess (response, file, fileList) {
-      const { data: {temp_path} } = response;
-      console.log('temp_path', temp_path);
+      console.log(response);
+      const path = response.data.tmp_path;
+      console.log('tmp_path', path);
       this.form.pics.push({
-        pic: temp_path
-      })
+        pic: path
+      });
+    },
+    // 删除已上传图片
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
     }
-  
-
   },
   components: {
     quillEditor,
@@ -218,7 +204,7 @@ export default {
 .ql-toolbar.ql-snow + .ql-container.ql-snow{
   border-bottom: 1px solid #ccc;
 }
-.handle-add-com {
+.handle-add {
   margin-top: 100px;
 }
 </style>

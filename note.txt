@@ -45,16 +45,38 @@ https://vuejs.circle.ink/
                   在商品列表添加按钮上编程式导航至add.vue
 			添加组件、
 	step组件 标签组件 form 表单组件 
-	抽取级联组件---TODO (prop验证)
+	抽取级联组件--- (prop验证)
 	父子组件通信：(深入了解组件) 
-	①如何在父组件应用子组件的值： events up TODO
+	①如何在父组件应用子组件的值： events up 
 	②父传子props down
     第四步：处理添加功能 awesome vue.js-->丰富的vue学习资源和各种包
 	富文本编辑器（vue-quil-editor） --yarn类似于npm
+----------------------------------------------------------------------------
 day09 
 一、上传图片组件
+     <!--
+        上传组件---封装的比较完整
+        ---此组件并未使用axios 所以提供了了一个headers 来支持设置请求头
+        action 用来指定图片上传的地址  用axios的基准路径在这里无效 请填写完整路径
+        on-preview：预览时触发
+        on-remove： 删除时触发
+        file-list： 存储上传的图片数组 {name: xxx, url：xxx}
+    -->
     删除事件： 
         数组的findindex 方法来遍历数组
         splice 
 tips: 补充顶级分类
-二、china area 安装 使用
+二、添加省市区级联
+    ---cascader 组件
+    ---element-china-area-data 安装 使用 
+    ---百度地图开放平台 jsapi 调用
+        1.地图容器要设置宽高
+        2.map必须设置在dom出现后 所以选择声明周期也分清
+        3.如何在全局设置map ---?
+        4.语法警告bmap
+        ---解决方法：
+                      对于非window默认成员，使用的时候加上window前缀 
+                      const { bamp } = window
+三、数据报表
+    如何在项目使用echarts 
+四、nprogress 加载进度条

@@ -3,15 +3,14 @@
       <el-card class="box-card">
         <!-- 面包屑 -->
         <my-breadcrumb level1="订单管理"  level2="订单列表"></my-breadcrumb>
-        <!--添加订单-->
-        <el-row class="addorders">
-          <el-col :span="24">
-            <el-button
-            @click="$router.push({name: 'orders-add'})"
-            plain type="success"
-           >添加订单</el-button>
-          </el-col>
-        </el-row>
+        <!--省市区三级联动-->
+        <el-cascader
+          class="addaddress"
+          size="large"
+          :options="options"
+          v-model="selectedOptions"
+          @change="handleChange">
+        </el-cascader>
         <!-- 表格 -->
         <el-table
           v-loading="loading"
@@ -29,8 +28,19 @@
           >
           </el-table-column>
           <el-table-column
-          prop="order_pay"
           label="是否付款">
+          <template slot-scope="scope">
+            <el-row>
+              <el-col :span=24>
+                <span v-if="scope.row.order_pay === '0'">
+                    <el-button plain type="warning">未付款</el-button>
+                </span>
+               <span v-else-if="scope.row.order_pay === '1'">
+                  <el-button plain type="success">已付款</el-button>
+                </span>
+              </el-col>
+            </el-row>
+          </template>
           </el-table-column>
           <el-table-column
           prop="is_send"
@@ -89,55 +99,61 @@
 </template>
 
 <script>
+import {regionData} from 'element-china-area-data';
 export default {
-    data () {
-      return {
-        loading: false,
-        pagenum: 1,
-        pagesize: 5,
-        total: -1,
-        orderList: []
-      };
-    },
-    created () {
-      this.loadData();
-      // this.loading = false;
-
-    },
-    methods: {
-      async loadData() {
-        const {data: resData}= await this.$http.get(`orders?pagenum=${this.pagenum}&pagesize=${this.pagesize}`)
-        console.log('订单列表', resData);
-        const { data: {goods, total}, meta: {status, msg }} = resData;
-
-        if (status === 200) {
-          this.total = total;
-          this.orderList = goods;
-        } else {
-          this.$message.error(msg);
-        }
-      },
-       // 分页功能
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-        this.loading = true;
-        this.pagesize = val;
-        this.loadData();
-        this.loading = false;
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        this.loading = true;
-        this.pagenum = val;
-        this.loadData();
-        this.loading = false;
+  data () {
+    return {
+      loading: false,
+      pagenum: 1,
+      pagesize: 5,
+      total: -1,
+      orderList: [],
+      // 级联
+      options: regionData,
+      selectedOptions: []
+    };
+  },
+  created () {
+    this.loadData();
+  },
+  methods: {
+    // 获取订单列表
+    async loadData() {
+      const {data: resData} = await this.$http.get(`orders?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+      console.log('订单列表', resData);
+      const {data: { goods, total }, meta: { status, msg }} = resData;
+      if (status === 200) {
+        this.total = total;
+        this.orderList = goods;
+      } else {
+        this.$message.error(msg);
       }
+    },
+    // 分页功能
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.loading = true;
+      this.pagesize = val;
+      this.loadData();
+      this.loading = false;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.loading = true;
+      this.pagenum = val;
+      this.loadData();
+      this.loading = false;
+    },
+    // 地区级联
+    handleChange (value) {
+      console.log(value);
     }
-}
+  }
+};
 </script>
 
 <style>
-.addorders {
+.addaddress {
   margin-top: 15px;
   margin-bottom: 15px;
 }

@@ -41,7 +41,6 @@
               <category-cas-cader  @ChildChange="handleChildChange"></category-cas-cader>
            </el-form-item>
            <el-button plain type="success" @click="activeName++">下一步</el-button>
-           <el-button plain type="success" @click="creatIm">立即创建</el-button>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="商品图片" name="1">
@@ -72,7 +71,8 @@
             ref="myQuillEditor"
             :options="editorOption">
           </quill-editor>
-         <el-button class="handle-add-com" plain type="success" @click="handleAddCom">提交完整信息</el-button>
+          <el-button class="handle-add-com" plain type="success" @click="handleAddCom">提交完整信息</el-button>
+          <el-button plain type="success" @click="creatIm">提交基本信息</el-button>
         </el-tab-pane>
          
       </el-tabs>
@@ -144,9 +144,10 @@ export default {
      
     },
     // 处理图片上传部分
-    // 处理删除图片
+    // 处理删除图片TODO
     handleRemove(file, fileList) {
       console.log('删除图片', file, fileList);
+
       // 
     },
     handlePreview(file) {

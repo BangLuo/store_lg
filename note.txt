@@ -8,6 +8,8 @@ https://vuejs.circle.ink/
      1、 点击按钮 弹出dialog
      2、布局所需表单控件
      3、Cascader 级联选择器 
+     ---TODO 如何成功添加顶级分类
+         
  	---配置：selectedOptions2 要选择的节点
                               Options  1.2级数据
 	---发送请求：传入type=2
@@ -54,4 +56,5 @@ day09
     删除事件： 
         数组的findindex 方法来遍历数组
         splice 
-	
+tips: 补充顶级分类
+二、china area 安装 使用

@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     HandleClick () {
-      console.log(111);
+      // console.log(111);
     },
     // 添加dialog 完成基本布局 show
     async loadData() {
@@ -162,19 +162,30 @@ export default {
     },
     // 图片上传 成功 TODO
     handleUploadSuccess (response, file, fileList) {
-      console.log('图片上传成功', response);
       const path = response.data.tmp_path;
-      console.log('tmp_path', path);
       this.form.pics.push({
         pic: path
       });
-      console.log(this.form.pics);
     },
     // 删除已上传图片
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // 把数组中某个元素的 pic === file.response.data.tmp_path 元素移除
+
+      // 数组的 findIndex 方法用来遍历数组
+      // 没遍历一次就执行一次回调函数
+      // 在回调函数中执行 item.pic === file.response.data.tmp_path 判定条件
+      // 如果判定就结果为 true，则停止遍历，返回该元素的索引
+      // 如果遍历到最后都没有 true，则返回 -1
+      // 还有一个方法 find，和 findIndex 类似，一个返回索引，一个返回元素
+      const index = this.form.pics.forEach((item, index) => {
+        return item.pic === file.response.data.tmp_path;
+        
+        this.form.pics.splice(index, 1);
+
+      })
+      // console.log(file);
     },
-    // 富文本框
+    // 富文本框 
     onEditorChange({ quill, html, text }) {
       this.content = html;
       this.form.goods_introduce = this.content;

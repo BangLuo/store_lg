@@ -1,0 +1,57 @@
+day08 
+电商管理后台 API 接口文档
+https://shop-api.circle.ink/
+Vue.js 入门教程
+https://vuejs.circle.ink/
+
+一、添加商品分类
+     1、 点击按钮 弹出dialog
+     2、布局所需表单控件
+     3、Cascader 级联选择器 
+ 	---配置：selectedOptions2 要选择的节点
+                              Options  1.2级数据
+	---发送请求：传入type=2
+	--- 配置props 更改显示的value 和 label
+                      value->cat_id 
+	      label->cat_name
+          	      children 
+	     ..
+	---将数据赋值给Options 数据得以显示
+ cat_pid: this.selectedOptions2[this.selectedOptions2.length - 1],
+ cat_level: this.selectedOptions2.length
+
+	---选择2级分类后 加入选择即改变 change-on-select   selectedOptions2 的数组出现一、二级cat_id
+	传送参数只需要二级id即可 
+	（es6对象展开）
+	--- 发送请求 传送id
+	--- 返回状态码  清空表单 （表单验证中的api）
+	---可继续优化 只添加1级数据
+二、删除商品分类
+     1.注册点击事件，传入参数为scpoe.row	
+     2. 发送删除请求请求， 携带分类id  （可以删除一二三级id）   
+     3.根据状态码判断 然后提示框
+三、编辑商品分类
+     第一步：显示商品分类 对话框， 原数据cat_name也显示
+	原数据存储在scope.row中
+     第二步：处理编辑逻辑
+	与添加几乎一样
+四、es6 ...语法解释
+五、商品列表
+     第一步： 打通商品路由
+     第二步： 发送请求，获取商品列表 （时间格式化）
+     第三步： 注册添加组件add.vue
+                  在商品列表添加按钮上编程式导航至add.vue
+			添加组件、
+	step组件 标签组件 form 表单组件 
+	抽取级联组件---TODO (prop验证)
+	父子组件通信：(深入了解组件) 
+	①如何在父组件应用子组件的值： events up TODO
+	②父传子props down
+    第四步：处理添加功能 awesome vue.js-->丰富的vue学习资源和各种包
+	富文本编辑器（vue-quil-editor） --yarn类似于npm
+day09 
+一、上传图片组件
+    删除事件： 
+        数组的findindex 方法来遍历数组
+        splice 
+	

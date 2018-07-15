@@ -38,23 +38,33 @@
               children: 'children'
               }">
             </el-cascader> -->
-              <category-cas-cader type="2" @ChildChange="handleChildChange"></category-cas-cader>
+              <category-cas-cader  @ChildChange="handleChildChange"></category-cas-cader>
            </el-form-item>
+           <el-button plain type="success" @click="activeName++">下一步</el-button>
            <el-button plain type="success" @click="creatIm">立即创建</el-button>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="商品图片" name="1">
+          <!--
+            上传组件---封装的比较完整
+            ---此组件并未使用axios 所以提供了了一个headers 来支持设置请求头
+            action 用来指定图片上传的地址  用axios的基准路径在这里无效 请填写完整路径
+            on-preview：预览时触发
+            on-remove： 删除时触发
+            file-list： 存储上传的图片数组 {name: xxx, url：xxx}
+            -->
           <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://localhost:8888/api/private/v1/upload"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
-            :file-list="fileList2"
+            :on-success="handleUploadSuccess"
+            :file-list="fileList"
+            :headers="headers"
             list-type="picture">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
-          <el-button plain type="success" @click="nextTab">下一步</el-button>
+          <el-button plain type="success" @click="parseInt(activeName)+1">下一步</el-button>
         </el-tab-pane>
         <el-tab-pane label="商品详情" name="2">
           <quill-editor v-model="content"
@@ -62,7 +72,7 @@
             ref="myQuillEditor"
             :options="editorOption">
           </quill-editor>
-         <el-button plain type="success" >提交</el-button>
+         <el-button class="handle-add-com" plain type="success" @click="handleAddCom">提交完整信息</el-button>
         </el-tab-pane>
          
       </el-tabs>
@@ -80,7 +90,6 @@ import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
 
-
 export default {
   data () {
     return {
@@ -91,16 +100,26 @@ export default {
         goods_price: '',
         goods_weight: '',
         goods_number: '',
-        goods_cat: ''
+        goods_cat: '',
+        pics: []
       },
       options: [],
       selectedOptions: [],
-      content: '',     // 上传图片
-      fileList2: [
-        {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
-        ],
-      // 
+      content: '',     
+      // 上传图片 设置token请求头
+      headers: {
+        Authorization: window.sessionStorage.getItem('token')
+      }, 
+      pics: [
+        // {pic: ''}
+      ],
+      fileList: [{
+        name: '', 
+        url: ''
+        }],
+      // 富文本编辑器 所需数据
       editorOption: {
+        
       },
 
     };
@@ -120,12 +139,15 @@ export default {
       this.options = data;
       // console.log(this.options);数据已经获取到 但是没有呈现
     },
+    // 下一步
     nextTab () {
      
     },
-    // 处理图片上传
+    // 处理图片上传部分
+    // 处理删除图片
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      console.log('删除图片', file, fileList);
+      // 
     },
     handlePreview(file) {
       console.log(file);
@@ -134,26 +156,31 @@ export default {
     handleChildChange (data) {
       this.form.goods_cat = data.join(',');
     },
-    // 提交商品信息 完成商品添加功能
+    // 提交商品基本信息 完成商品添加功能
     async creatIm () {
       console.log(this.form);
-      const { data: resData } = await this.$http.post('/goods', {
-        goods_name: 111,
-        goods_price: 2,
-        goods_number: 3,
-        goods_cat: '1,1',
-        goods_number: 4
-      });
+      const { data: resData } = await this.$http.post('/goods', this.form);
       console.log(resData);
       console.log(resData);
       const meta = resData.meta;
       
-      // if (meta.status === 201) {
-      //   this.$message.success(meta.msg);
-      //   this.loadData();
-      // } else {
-      //   this.$message.error(meta.msg);
-      // }
+      if (meta.status === 201) {
+        this.$message.success(meta.msg);
+        this.loadData();
+      } else {
+        this.$message.error(meta.msg);
+      }
+    },
+    handleAddCom () {
+      console.log('handleAddCom');
+    },
+    // 图片上传 成功 TODO
+    handleUploadSuccess (response, file, fileList) {
+      const { data: {temp_path} } = response;
+      console.log('temp_path', temp_path);
+      this.form.pics.push({
+        pic: temp_path
+      })
     }
   
 
@@ -189,5 +216,8 @@ export default {
 }
 .ql-toolbar.ql-snow + .ql-container.ql-snow{
   border-bottom: 1px solid #ccc;
+}
+.handle-add-com {
+  margin-top: 100px;
 }
 </style>

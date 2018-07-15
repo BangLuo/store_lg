@@ -25,7 +25,7 @@ export default {
   props: {
     type: {
       type: [String, Number],
-      default: 1
+      default: 3
     }
   },
   async created () {

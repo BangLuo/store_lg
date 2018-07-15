@@ -69,7 +69,8 @@
           <quill-editor v-model="content"
             class="content"
             ref="myQuillEditor"
-            :options="editorOption">
+            :options="editorOption"
+            @change="onEditorChange($event)">
           </quill-editor>
           <el-button plain type="success" class="handle-add" @click="creatAdd">提交</el-button>
         </el-tab-pane>
@@ -93,13 +94,15 @@ export default {
     return {
       activeName: '0',
       stepActive: 0,
+      content: '',
       form: {
         goods_name: '',
         goods_price: '',
         goods_weight: '',
         goods_number: '',
         goods_cat: '',
-        pics: []
+        pics: [],
+        goods_introduce: '',
       },
       options: [],
       selectedOptions: [],
@@ -130,12 +133,10 @@ export default {
     // 添加dialog 完成基本布局 show
     async loadData() {
       const {data: resData} = await this.$http.get('categories?type=3');
-      // console.log(resData);
       const { data } = resData;
       this.options = data;
-      // console.log(this.options);数据已经获取到 但是没有呈现
     },
-    // 下一步
+    // 下一步 处理
     handleNextTab () {
       this.activeName = Number.parseInt(this.activeName) + 1 + '';
       this.stepActive = this.stepActive + 1;
@@ -146,7 +147,6 @@ export default {
     },
     // 提交商品基本信息 完成商品添加功能
     async creatAdd () {
-      console.log('商品添加', this.form);
       const { data: resData } = await this.$http.post('/goods', this.form);
       const meta = resData.meta;
       if (meta.status === 201) {
@@ -162,16 +162,22 @@ export default {
     },
     // 图片上传 成功 TODO
     handleUploadSuccess (response, file, fileList) {
-      console.log(response);
+      console.log('图片上传成功', response);
       const path = response.data.tmp_path;
       console.log('tmp_path', path);
       this.form.pics.push({
         pic: path
       });
+      console.log(this.form.pics);
     },
     // 删除已上传图片
     handleRemove(file, fileList) {
       console.log(file, fileList);
+    },
+    // 富文本框
+    onEditorChange({ quill, html, text }) {
+      this.content = html;
+      this.form.goods_introduce = this.content;
     }
   },
   components: {

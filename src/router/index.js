@@ -1,18 +1,22 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { Message } from 'element-ui';
+import NProgress from 'nprogress';
+
 import Login from '@/views/Login';
 import Home from '@/views/Home';
 import Users from '@/views/users/Users';
 import Rights from '@/views/roles/Rights';
 import Roles from '@/views/roles/Roles';
-import { Message } from 'element-ui';
+
 import Categories from '@/views/goods/Categories';
 import GoodsList from '@/views/goods/GoodsList';
 import GoodsAdd from '@/views/goods/Add';
 import OrderList from '@/views/orders/List';
 import Reports from '@/views/reports/Reports';
-import NProgress from 'nprogress';
 
+
+// const Foo = () => Promise.resolve({ /* 组件定义对象 */ })
 
 Vue.use(Router);
 const router = new Router({

@@ -40,7 +40,7 @@
             </el-cascader> -->
               <category-cas-cader  @ChildChange="handleChildChange"></category-cas-cader>
            </el-form-item>
-           <el-button plain type="success" @click="activeName++">下一步</el-button>
+           <el-button plain type="success" @click="handleNextTab">下一步</el-button>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="商品图片" name="1">
@@ -63,7 +63,7 @@
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
-          <el-button plain type="success" @click="parseInt(activeName)+1">下一步</el-button>
+          <el-button plain type="success" @click="handleNextTab">下一步</el-button>
         </el-tab-pane>
         <el-tab-pane label="商品详情" name="2">
           <quill-editor v-model="content"
@@ -91,8 +91,8 @@ import { quillEditor } from 'vue-quill-editor';
 export default {
   data () {
     return {
-      active: 0,
-      activeName: 0,
+      activeName: '0',
+      stepActive: 0,
       form: {
         goods_name: '',
         goods_price: '',
@@ -136,7 +136,9 @@ export default {
       // console.log(this.options);数据已经获取到 但是没有呈现
     },
     // 下一步
-    nextTab () {
+    handleNextTab () {
+      this.activeName = Number.parseInt(this.activeName) + 1 + '';
+      this.stepActive = this.stepActive + 1;
     },
     // 子组件传值函数
     handleChildChange (data) {

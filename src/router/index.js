@@ -11,6 +11,7 @@ import GoodsList from '@/views/goods/GoodsList';
 import GoodsAdd from '@/views/goods/Add';
 import OrderList from '@/views/orders/List';
 import Reports from '@/views/reports/Reports';
+import NProgress from 'nprogress';
 
 
 Vue.use(Router);
@@ -74,6 +75,7 @@ const router = new Router({
   ]
 });
 router.beforeEach((to, from, next) => {
+  NProgress.start();
   // 判断是否是登路 是 next 不是 需要token
   if (to.name === 'login') {
     next();
@@ -86,5 +88,7 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
+router.afterEach((to, from) => {
+  NProgress.done();
+})
 export default router;

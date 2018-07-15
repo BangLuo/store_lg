@@ -7,6 +7,14 @@
 <script>
 import echarts from 'echarts';
 
+
+
+// NProgress.start();
+// setTimeout(() => {
+//   NProgress.done();
+// }, 3000);
+
+
 export default {
   data () {
     return {

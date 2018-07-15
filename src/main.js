@@ -6,6 +6,8 @@ import router from './router';
 // 引入node-moudles中的element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+// 第三方包nprogress的样式引入
+import 'nprogress/nprogress.css';
 import '@/assets/css/style.css';
 import MyAxios from '@/plugins/MyAxios.js';
 import moment from 'moment';
